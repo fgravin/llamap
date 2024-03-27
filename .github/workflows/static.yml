@@ -25,6 +25,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  env_var: ${{ secrets.VITE_OPENAI_API_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,8 +47,15 @@ jobs:
         run: '[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true'
       - name: Checks
         run: npm run format && npm run lint
+      - name: Use variables
+        run: |
+          echo "repository variable : REPOSITORY_VAR"
+        env:
+          REPOSITORY_VAR: ${{ secrets.VITE_OPENAI_API_KEY }}
       - name: Build
         run: npm run build-only -- --base=/llamap/
+        env:
+          VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

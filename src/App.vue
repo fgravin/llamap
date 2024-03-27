@@ -12,9 +12,14 @@ const { loading } = storeToRefs(llmStore)
 const sendPrompt = async (prompt: string) => {
   llmStore.setLoading(true)
 
-  const chatResponse = await callOpenAI(prompt)
-  const osmResponse = await callOverpassApi(chatResponse)
+  const chatResponse = await callOpenAI(prompt).catch(handleErrors)
+  const osmResponse = await callOverpassApi(chatResponse).catch(handleErrors)
   llmStore.setGeojson(osmResponse)
+  llmStore.setLoading(false)
+}
+
+function handleErrors(error: Error) {
+  console.error(error)
   llmStore.setLoading(false)
 }
 </script>
