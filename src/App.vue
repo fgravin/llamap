@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import Map from './components/Map.vue'
 import Prompt from '@/components/Prompt.vue'
-import { useLLMStore } from '@/stores/counter'
+import { useLLMStore } from '@/stores/llm'
 import { storeToRefs } from 'pinia'
+import { callOpenAI } from '@/services/openai.client'
+import { callOverpassApi } from '@/services/overpass.client'
+import { addGeojson } from '@/services/map.service'
 
 const llmStore = useLLMStore()
 const { loading } = storeToRefs(llmStore)
-const sendPrompt = (prompt: string) => {
-  console.log(prompt)
+const sendPrompt = async (prompt: string) => {
   llmStore.setLoading(true)
-  setTimeout(() => llmStore.setLoading(false), 3000)
+
+  const chatResponse = await callOpenAI(prompt)
+  const osmResponse = await callOverpassApi(chatResponse)
+  llmStore.setGeojson(osmResponse)
+  llmStore.setLoading(false)
 }
 </script>
 

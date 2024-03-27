@@ -3,7 +3,7 @@ import { type Ref, ref } from 'vue'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import IconRocket from '@/components/icons/IconRocket.vue'
 import IconClose from '@/components/icons/IconClose.vue'
-
+const input = ref<HTMLInputElement>()
 const prompt: Ref<String> = ref('')
 defineProps({
   loading: Boolean
@@ -15,6 +15,7 @@ const sendPrompt = () => {
 }
 const reset = () => {
   prompt.value = ''
+  input.value?.focus()
 }
 </script>
 
@@ -24,7 +25,8 @@ const reset = () => {
       type="text"
       v-model="prompt"
       autofocus
-      class="grow text-primary-800 focus:shadow-3xl transition-all outline-2 outline-none focus:shadow-primary-700 border-primary-500 h-18 rounded-xl border px-12 py-6 pl-32"
+      ref="input"
+      class="grow text-primary-800 focus:shadow-3xl pr-32 transition-all outline-2 outline-none focus:shadow-primary-700 border-primary-500 h-18 rounded-xl border px-12 py-6 pl-32"
       placeholder="Que souhaitez-vous afficher ?"
     />
     <div
